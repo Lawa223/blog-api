@@ -4,13 +4,13 @@ const userSchema = new mongoose.Schema(
     {
         firstName : {
             type : String,
-            require : [true,"firstName is require"],
-            trim : true
+            required : [true,"firstName is require"],
+            trim : true,
         },
         lastName : {
             type : String,
-            require : [true,"lastName is require"],
-            trim : true
+            required : [true,"lastName is require"],
+            trim : true,
         },
         profilePhoto : {
             type : String,
@@ -18,10 +18,66 @@ const userSchema = new mongoose.Schema(
         },
         email : {
             type : String,
-            require : [true,"email is require"]
+            require : [true,"email is require"],
         },
+          password: {
+            type: String,
+            required: [true,"password is required"],
+          },
+          postCount:{
+            type: Number,
+            default: 0,
+          },
+          isBlocked: {
+            type: Boolean,
+            default: false,
+          },
+          isAdmin: {
+             type: Boolean,
+             default: false,
+          },
+          role:{
+            type: String,
+            enum: ["Admin","Guest","Editor"],
+          },
+          viewedBy: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref:"User",
+            },
+          ],
+          followers : [
+            {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "User",
+          },
+          ],
+          following: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+            },
+          ],
+          active:{
+            type: Boolean,
+            default: true,
+          },
+          posts:[
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Post",
+            },
+          ],
+           },
+           {
+            timestamps: true,
+           },
+          
+          
+       {
+      },
 
-       
-      }
+);
 
-)
+const User = mongoose.model("User", userSchema)
+module.exports = User;
