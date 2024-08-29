@@ -1,20 +1,29 @@
 const express =  require("express");
-const { createComment,allComment, singleComment, updateComment, deleteComment } = require("../Controller/commentCtrl");
+const commentRouter = express.Router();
+const isLogin = require("../middlewares/isLogin");
+const {createCommentCtrl,fetchAllCommentCtrl,fetchSingleCommentCtrl,updateComment,deletecommentCtrl} = require("../Controller/commentCtrl")
 
 
-const commentRouter = express.Router()
+
+
+const multer = require("multer");
+const storage = require("../Config/cloudinary");
+//instance of multer
+const upload = multer({storage})
+
+
 
 // ----comment---
 
-commentRouter.post("/",createComment);
+commentRouter.post("/:id",isLogin,createCommentCtrl);
 
-commentRouter.get("/",allComment);
+commentRouter.get("/", fetchAllCommentCtrl);
 
-commentRouter.get("/:id",singleComment);
+commentRouter.get("/:id",isLogin,fetchSingleCommentCtrl);
 
-commentRouter.put("/:id",updateComment );
+commentRouter.put("/:id",isLogin,upload.single("photo"), updateComment );
 
-commentRouter.delete("/:id",deleteComment);
+commentRouter.delete("/:id",isLogin, deletecommentCtrl);
 
 
 

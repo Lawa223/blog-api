@@ -1,18 +1,20 @@
 const express =  require("express");
-const { createCategory, allCategory, singleCategory, updateCategory, deleteCategory } = require("../Controller/categoryctrl");
+const { createCategoryCtrl,  updateCategory,  deleteCategoryCtrl, fetchSingleCategoryCtrl, fetchAllCategoryCtrl } = require("../Controller/categoryCtrl");
+
+const isLogin = require("../middlewares/isLogin");
 const categoryRouter = express.Router()
 
 // ----category---
 
-categoryRouter.post("/",createCategory);
+categoryRouter.post("/",isLogin, createCategoryCtrl);
 
-categoryRouter.get("/",allCategory);
+categoryRouter.get("/",fetchAllCategoryCtrl);
 
-categoryRouter.get("/:id",singleCategory);
+categoryRouter.get("/:id",fetchSingleCategoryCtrl);
 
 categoryRouter.put("/:id",updateCategory);
 
-categoryRouter.delete("/:id",deleteCategory);
+categoryRouter.delete("/:id",isLogin,deleteCategoryCtrl);
 
 
 module.exports = categoryRouter;

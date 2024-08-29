@@ -1,40 +1,63 @@
-const express =  require("express")
-// const userRouter = express.Router()
-// ----user---
+    const express =  require("express")
+    // const userRouter = express.Router()
+   // ----user---
 
 
 
-const { register, login, allUsers, singleUser, updateUser, deleteUsers, profilePhotoUploadCtrl, whoViewedProfileCtrl, followingCtrl } = require("../Controller/userCtrl");
+   const { register, login, allUsers, singleUser,deleteUsers, profilePhotoUploadCtrl,         whoViewedProfileCtrl, followingCtrl, unFollowCtrl, blockedCtrl, unBlockedCtrl, adminBlockUserCtrl, adminUnBlockUserCtrl, updateUserCtrl, updatePassWordCtrl, deleteUserCtrl } = require("../Controller/userCtrl");
 
-const isLogin = require("../middlewares/isLogin");
-const multer = require("multer");
-const storage = require("../Config/cloudinary");
- const userRouter = express.Router()
+   const isLogin = require("../middlewares/isLogin");
+   const multer = require("multer");
+   const storage = require("../Config/cloudinary");
+const isAdmin = require("../middlewares/isAdmin");
+   const userRouter = express.Router()
 
- //instance of multer
- const upload = multer({storage})
+   //instance of multer
+   const upload = multer({storage})
 
  
- userRouter.post("/register",register);
+   userRouter.post("/register",register);
 
- userRouter.post("/login",login);
+   userRouter.post("/login",login);
 
- userRouter.get("/",allUsers);
+   userRouter.get("/",allUsers);
 
- userRouter.get("/profile",isLogin,singleUser);
+   userRouter.get("/profile",isLogin,singleUser);
 
- userRouter.put("/profile/:id",updateUser);
+   userRouter.put("/update",isLogin, updateUserCtrl);
 
-// userRouter.delete("/profile/:id",deleteUser);
+   userRouter.put("/update-password",isLogin, updatePassWordCtrl);
 
-//Get/api/v1/users/profile-viewers/:id
-userRouter.get("/profile-viewers/:id", isLogin, whoViewedProfileCtrl);
+  userRouter.delete("/delete",isLogin,deleteUserCtrl);
 
-//Get/api/v1/users/profile-follower/:id
-userRouter.get("/following/:id",isLogin,followingCtrl);
+  //Get/api/v1/users/profile-viewers/:id
+  userRouter.get("/profile-viewers/:id", isLogin, whoViewedProfileCtrl);
 
- //post/api/v1/users/profile-photo-upload
- userRouter.post("/profile-photo-upload",isLogin,upload.single("profile"),profilePhotoUploadCtrl);
+  //Get/api/v1/users/profile-follower/:id
+  userRouter.get("/following/:id",isLogin,followingCtrl);
+
+   //Get/api/v1/users/following/:id
+   userRouter.get("/unfollowing/:id",isLogin,unFollowCtrl)
+
+
+
+   //Get/api/v1/users/block/:id
+   userRouter.get("/blocked/:id",isLogin,blockedCtrl)
+
+
+      //Get/api/v1/users/unblock/:id
+      userRouter.get("/unblocked/:id",isLogin,unBlockedCtrl)
+
+
+        //Put/api/v1/users/Admin-block/:id
+        userRouter.put("/admin-block/:id",isLogin,isAdmin, adminBlockUserCtrl);
+
+
+          //Put/api/v1/users/Admin-unBlock/:id
+          userRouter.put("/admin-unblock/:id",isLogin,isAdmin, adminUnBlockUserCtrl);
+
+   //post/api/v1/users/profile-photo-upload
+   userRouter.post("/profile-photo-upload",isLogin,upload.single("profile"),profilePhotoUploadCtrl);
  
 
 

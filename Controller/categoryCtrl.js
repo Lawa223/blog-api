@@ -1,70 +1,93 @@
+
+const appErr = require("../Utils/appErr");
+const Category = require("../Model/Category/Category")
+
+
+
+
 // Create Category
 
-const createCategory =  async (req,res) =>{
+
+
+const createCategoryCtrl =  async (req, res, next) =>{
+    const {title} = req.body;
     try {
+        const category = await Category.create({title,user: req.userAuth});
         res.json({
             status: "success",
-            data: "Category created successfully"
+            data: category ,
         })
     } catch (error) {
-        res.json(error.message);
+        next(appErr(error.message));
     }
 }
 
-// All Category
+    // fetch all category
 
-const allCategory =  async (req,res) =>{
-    try {
-        res.json({
-            status: "success",
-            data: "All category"
-        })
-    } catch (error) {
-        res.json(error.message);
+    const fetchAllCategoryCtrl = async (req,res,next) =>{
+        try{
+            const categories = await Category.find();
+            res.json({
+                status: "success",
+                data: categories,
+            });
+        }catch(error){
+            next(appErr(error.message));
+        }
     }
-}
 
 
 //Single Category
 
-const singleCategory =  async (req,res) =>{
+const fetchSingleCategoryCtrl =  async (req,res,next) =>{
     try {
+         
+        const category = await Category.findById(req.params.id)
         res.json({
             status: "success",
-            data: "Single Category"
+            data: category,
         })
     } catch (error) {
-        res.json(error.message);
+        next(appErr(error.message));
     }
 }
+
+
+
 //Update Category
-const updateCategory =  async (req,res) =>{
+const updateCategory =  async (req,res,next) =>{
+    const {title} = req.body;
     try {
+        const category = await Category.findByIdAndUpdate(req.params.id,{title},{new: true, runValidators: true},);
         res.json({
             status: "success",
-            data: "Update Category",
+            data: category,
         })
     } catch (error) {
-        res.json(error.message);
+        next(appErr(error.message));
     }
 }
 
 //Delete Category
-const deleteCategory =  async (req,res) =>{
+const deleteCategoryCtrl =  async (req,res,next) =>{
     try {
+        //1.find the Category to be deleted
+        await Category.findByIdAndDelete(req.params.id);
+  
         res.json({
             status: "success",
-            data: "Delete Category",
+            Message: "Category deleted successfully"
         })
     } catch (error) {
-        res.json(error.message);
+        next(appErr(error.message));
     }
 }
 
 module.exports = {
-    createCategory,
-    allCategory,
-    singleCategory,
+    createCategoryCtrl,
+    fetchAllCategoryCtrl,
+    fetchSingleCategoryCtrl,
     updateCategory,
-    deleteCategory,
+    deleteCategoryCtrl,
+    
 }
